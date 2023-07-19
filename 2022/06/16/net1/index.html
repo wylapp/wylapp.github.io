@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 家庭网络优化记录(I) · 我的技术</title><meta name="description" content="家庭网络优化记录(I) - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="https://wylapp.github.io/atom.xml" title="我的技术"><meta name="generator" content="Hexo 6.2.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/heading.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">家庭网络优化记录(I)</h1><div class="post-info">2022年6月16日</div><div class="post-content"><p>这个系列预计会有多篇文章，每一篇聚焦一两个问题，在这一篇主要考虑IPv6的问题。<br>IPv6已经是大势所趋，未来一定会大规模部署使用，实际上现在的骨干网早已支持该协议，真正的痛点出在“最后一公里”，也就是家里的路由器上。绝大部分2018年之前购买的路由器内部完全没有或部分残缺IPv6协议栈，即便现代操作系统普遍支持该协议，在这样的网络环境下，难以真正分配得到可用v6地址。</p>
+<span id="more"></span>
+<h2 id="路由器残缺的协议栈"><a href="#路由器残缺的协议栈" class="headerlink" title="路由器残缺的协议栈"></a>路由器残缺的协议栈</h2><p>现在接入宽带普遍采用FTTH模式，在光缆中就是光信号，只有到了光电转换这（也就是俗称的光猫），才能看到以太网帧。由于IP协议是工作在第三层的，因此和路由功能直接相关。目前家中的主要网络设备为一台光猫和一台路由器。光猫改为桥接模式以后，相当于工作在第二层，而路由器通过ppp协议接入互联网，在此之上提供路由功能，属于第三层。</p>
+<p>遇到的第一个问题，现有的这台路由器不支持ppp拨号时协商IPv6地址。查证过程如下：首先需要开启路由器的telnet功能，需要进入shell来查看拨号日志。在登入网页管理端以后，访问该网址：<a target="_blank" rel="noopener" href="http://192.168.0.1/goform/telnet">http://192.168.0.1/goform/telnet</a> 后，页面提示<code>load telnetd success.</code>表示开启telnet成功，会话在网页管理端退出前有效。</p>
+<p>使用shell进入telenet，用户名为root，密码Fireitup，在路径<code>/var/pppoe.log</code>查看到拨号日志。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Connected to **:dc:**:10:**:95 via interface eth1</span><br><span class="line">using channel 1</span><br><span class="line">Using interface ppp1</span><br><span class="line">Connect: ppp1 &lt;--&gt; eth1</span><br><span class="line">Couldn&#x27;t increase MTU to 1500</span><br><span class="line">Couldn&#x27;t increase MRU to 1500</span><br><span class="line">sent [LCP ConfReq id=0x1 &lt;mru 1480&gt; &lt;magic 0xf782762f&gt;]</span><br><span class="line">...</span><br><span class="line">rcvd [PAP AuthAck id=0x1 &quot;Authentication success,Welcome!&quot;]</span><br><span class="line">Remote message: Authentication success,Welcome!</span><br><span class="line">PAP authentication succeeded</span><br><span class="line">peer from calling number **:DC:**:10:**:95 authorized</span><br><span class="line">...</span><br><span class="line">sent [IPCP ConfAck id=0x1 &lt;addr 10.10.0.1&gt;]</span><br><span class="line">rcvd [proto=0x8057] 01 01 00 0e 01 0a a6 dc be ** fe 10 e9 95</span><br><span class="line">Unsupported protocol &#x27;IPv6 Control Protocol&#x27; (0x8057) received &lt;---THIS LINE MATTERS!</span><br><span class="line">sent [LCP ProtRej id=0x2 80 57 01 01 00 0e 01 0a a6 dc be ** fe 10 e9 95]</span><br><span class="line">...</span><br><span class="line">local  IP address 10.***</span><br><span class="line">remote IP address 10.***</span><br><span class="line">primary   DNS address 222.***</span><br><span class="line">secondary DNS address 222.***</span><br></pre></td></tr></table></figure>
+
+<p>这是一份很标准的链路协商日志，关键问题就出在了Unsupported protocol这一句，拨号程序不认识IPv6的链路控制协议，自然也没法获得IP地址，也就是说协议栈是残缺的。<b>但也不是说这个路由器就没用</b>，在后面会看到，还是一定程度上可以利用的。</p>
+<h2 id="SLAAC和DHCPv6"><a href="#SLAAC和DHCPv6" class="headerlink" title="SLAAC和DHCPv6"></a>SLAAC和DHCPv6</h2><p>既然路由器从拨号这一关就不认识IPv6协议，那也就没法继续直接利用，自行修改固件也不太可能。于是转战研究光猫。光猫的硬件生产年份为2017年，经过查看管理界面的代码，部分注释标注2021年，因此可以认为该光猫获得了运营商下发的更新。</p>
+<p>在网络管理界面，改变模式为“路由”，开启FullConeNAT，以期能够达到NAT1。重点是下方的IPv6配置，一定要勾选获取前缀，获取方式就是PrefixDelegation，这个地方的配置对于后续手机等设备能否正常获取地址非常关键。<br><img src="https://pic.imgdb.cn/item/62ab556b09475431290175c1.jpg" alt="网络设置页"><br>之后进入用户侧管理，对于IPv4的配置不用改动，主要是注意IPv6部分。在最开始的测试中，如果开启DHCPv6则所有的安卓手机均无法获得IPv6地址，其余设备正常。在反复查证后了解到，Android系统<b>只支持以SLAAC</b> (Stateless Adress AutoConfigure，无状态自动地址配置)方式获得IPv6地址，因此这里关闭DHCPv6服务器，不勾选“地址信息通过DHCP获取”。刚才讲到的前缀，也就决定了这两种方式分配地址的方式的不同。IPv4在拨号时只会获得一个地址，IPv6获取的是一个前缀，在前缀后面的部分是可以自定义的。使用光猫拨号分配得到的是一个&#x2F;56地址块，在使用SLAAC的情况下，&#x2F;56地址块可以进一步划分得到2^8&#x3D;256个&#x2F;64地址块。设备单拨地址协商的大致过程如下：</p>
+<ul>
+<li>设备发送RS报文，请求地址信息</li>
+<li>网关发送RA报文，包含前缀和前缀长度等信息</li>
+<li>设备根据前缀长度，生成后半部分地址（接口ID）</li>
+<li>邻居发现，检测是否重复地址(DAD)</li>
+</ul>
+<p>在RA报文中，M,O标记就是图片中的“地址信息通过DHCP获取”和“其他信息通过DHCP获取”。所谓无状态，就是不存在全局的地址服务器，内部维护该自治系统下的全部地址分配状态信息。<br><img src="https://pic.imgdb.cn/item/62ab56000947543129033c25.jpg" alt="用户侧配置"></p>
+<table>
+<thead>
+<tr>
+<th>M</th>
+<th>O</th>
+<th>含义</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1</td>
+<td>地址和DNS等都从DHCPv6服务器取得</td>
+<td>Stateful DHCPv6</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>地址使用RA广播的prefix+EUI-64计算出来的接口地址,DNS和其他服务器从DHCPv6取得</td>
+<td>Stateless DHCPv6</td>
+</tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>完全的Stateless配置,仅地址使用RA广播的prefix+ EUI-64计算出来的接口地址</td>
+<td>Stateless AutoConfiguration</td>
+</tr>
+</tbody></table>
+<p>其中，<u>无状态DHCPv6是最常用的配置方式</u>。在使用了上述配置以后，将路由器改为AP模式，或关闭路由器自带的DHCP功能后，将光猫千兆口与路由器LAN口连接，<strong>将无线路由器降级为二层交换机使用</strong>，也就无视了路由器内部的三层及以上协议栈。至此，所有设备均可分配得到可用的IPv6地址。</p>
+</div></article></div></main><footer><div class="paginator"><a class="next" href="/2022/04/13/echo_424/">下一篇</a></div><div class="copyright"><p>© 2019 - 2023 <a href="https://wylapp.github.io">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">蒙ICP备20000657号</a>| <a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=15078102000235"><img src="https://www.sohu.com/upload/images/server/ghs.png">蒙公网安备15078102000235号</a> </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> uWSGI应用发布随笔 · 我的技术</title><meta name="description" content="uWSGI应用发布随笔 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="https://wylapp.github.io/atom.xml" title="我的技术"><meta name="generator" content="Hexo 6.2.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/heading.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">uWSGI应用发布随笔</h1><div class="post-info">2021年7月17日</div><div class="post-content"><h1>前言</h1>
+<p>从2019年开始接触Python-Web开发开始，大大小小的应用也做了十几个了。从一开始为了部署一个应用研究好几天，到后来摸清了所有过程几分钟就能完成部署工作，确实感受到人的认知过程是螺旋上升的。在这个过程中也积累了很多经验，在这篇随笔中记录一下。</p>
+<span id="more"></span>
+
+<h2>一些重要的原则</h2>
+<ul>
+<li>在任何情况下，都不应该使用开发服务器部署应用</li>
+<li>不能直接将uWSGI直接暴露在外网（即不应该使用http模式）</li>
+<li>反向代理服务器nginx是首选，如果条件确实不允许，也可以使用apache</li>
+<li>最好不要使用root账号部署应用</li>
+</ul>
+<h2>一些经验</h2>
+<ul>
+<li>如果使用frp，可以使用TCP socket，并将这个端口映射到外网，在外网的服务器做反向代理</li>
+<li>可以将静态文件交给nginx处理</li>
+<li>Apache配置起来比nginx复杂得多</li>
+</ul>
+<h1>uWSGI配置模版</h1>
+<p>需要在项目路径下保存配置文件，通常的命名方式是<code>myconfig.ini</code>，对于flask和Django的配置方式还有所不同。</p>
+<h2>flask</h2>
+<p>下面展示基于<code>flask</code>开发应用的配置文件：</p>
+<pre><code class="language-shell">[uwsgi]
+base =/www/wwwroot/yourprojectdir
+callable = app
+socket = 127.0.0.1:9162
+chdir =/www/wwwroot/yourprojectdir
+wsgi-file =main.py
+processes = 1
+threads = 2
+chmod-socket = 666
+daemonize = myapp.log
+logto = myapp.log
+pidfile = myappmaster.pid
+vacuum = true</code></pre>
+<p>需要注意的是，<code>flask</code>开发应用都会实例化一个<code>app</code>对象出来，在上面的配置中我们要让uwsgi服务器找到这个对象并执行。因此<code>main.py</code>文件中需要包含这样的语句：</p>
+<pre><code class="language-python">from . import app
+
+<p>if <strong>name</strong> &#x3D;&#x3D; &quot;<strong>main</strong>&quot;:<br>    app.run(host&#x3D;&quot;0.0.0.0&quot;, debug&#x3D;False)</code></pre></p>
+<h2>Django</h2>
+<p>对于Django项目，配置起来就相对简单一下，示例的配置文件如下：</p>
+<pre><code class="language-shell">[uwsgi]
+socket = :7730
+chdir = /www/wwwroot/yourprojectdir/
+module = myapp.wsgi
+master = true
+processes = 2
+threads = 2
+vacuum = true
+pidfile = dmaster.pid
+daemonize = dlog.log</code></pre>
+<h1>nginx反向代理配置</h1>
+<p>端口什么的就不用说了，需要在vhost下面添加以下路由：</p>
+<pre><code>location / &#123; 
+        include uwsgi_params;
+        uwsgi_pass 127.0.0.1:7730;
+#       uwsgi_pass unix:///temp/ufs.sock
+        uwsgi_read_timeout 2;
+    &#125;</code></pre>
+<p>保存配置以后，重启即可，这是发现已经可以访问web应用了。
+如果还有静态文件访问需求，还需要在nginx中配置静态文件路由，具体配置如下</p>
+<pre><code>location /static&#123;
+    alias /path/to/static/;
+&#125;</code></pre>
+<h1>uWSGI的启动和重载</h1>
+<p>使用配置文件启动应用服务器</p>
+<pre><code class="language-shell">uwsgi -i uwsgi_config.ini</code></pre>
+<p>重载配置和代码</p>
+<pre><code class="language-shell">uwsgi --reload master.pid</code></pre></div></article></div></main><footer><div class="paginator"><a class="prev" href="/2021/10/29/echo_353/">上一篇</a><a class="next" href="/2021/06/08/echo_235/">下一篇</a></div><div class="copyright"><p>© 2019 - 2023 <a href="https://wylapp.github.io">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">蒙ICP备20000657号</a>| <a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=15078102000235"><img src="https://www.sohu.com/upload/images/server/ghs.png">蒙公网安备15078102000235号</a> </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

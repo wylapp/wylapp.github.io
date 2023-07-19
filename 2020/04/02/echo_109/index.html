@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Java的抽象类、接口 · 我的技术</title><meta name="description" content="Java的抽象类、接口 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="https://wylapp.github.io/atom.xml" title="我的技术"><meta name="generator" content="Hexo 6.2.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/heading.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Java的抽象类、接口</h1><div class="post-info">2020年4月2日</div><div class="post-content"><!-- wp:group -->
+<div class="wp-block-group"><div class="wp-block-group__inner-container"><!-- wp:heading -->
+<h2>1.抽象类(abstract)</h2>
+<!-- /wp:heading -->
+<span id="more"></span>
+<!-- wp:paragraph -->
+<p>我们已经学习了Java面向对象的编程思想，前面我们也接触了简单的类的继承关系。但是现在考虑这样一个问题：当我们有大量的类需要继承自同一个类的时候，我们往往只将这些子类进行实例化，而从不关心父类的实例化问题。也就是说这个父类实际上对于用户来说是<strong>抽象</strong>的，这些子类实现的功能对用户来说是<strong>具体</strong>的。这些具体方法继承自父类的抽象方法，当一个类中存在抽象方法时，这个类就必须被声明为抽象类，抽象方法只包含声明部分，不包含方法体。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>需要注意的是：</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol><li>抽象类中可以<strong>不包含</strong>抽象方法；</li><li>抽象类可以继承自非抽象类，也可以继承自抽象类；</li><li>抽象类中可以包含static变量、方法，这些域<strong>不需要</strong>实例化可以直接调用；</li><li>抽象类中可以包含普通方法，但是<strong>只能</strong>在其子类实例化后调用；</li><li>抽象类中可以包含构造器，但是<strong>只能</strong>用于子类的构造，其本身不能被实例化；</li><li>抽象类的子类必须对父类声明的全部方法补全方法体，不能只补其中几个。</li></ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>下面的代码展示了相关的例子，可供参考。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:preformatted -->
+<pre class="wp-block-preformatted">import java.util.*;
+class myClass{
+ private int mynum;
+}
+
+abstract class mmyClass extends myClass{
+ private int mmyClassPrivate;
+ public static int demo=5;
+ public abstract void getInfo();
+ public void abstractNormalMethod() {
+ System.out.println("abstractNormalMethod");
+ }
+ public static void abstractStaticMethod() {
+ System.out.println("abstractStaticMethod");
+ }
+ public mmyClass() {
+ this.mmyClassPrivate = 5;
+ System.out.println(mmyClassPrivate);
+ }
+}
+
+class myNum extends mmyClass{
+ public void getInfo() {
+ System.out.println("myline");
+ }
+ public void myInfo() {
+ System.out.println("myline's own method");
+ }
+}
+public class Main{
+ public static void main(String[] argv) {
+ System.out.println(mmyClass.demo);
+ //mmyClass mmy = new mmyClass(); ERROR
+ mmyClass.abstractStaticMethod();
+ myNum num = new myNum();
+ num.getInfo();
+ num.abstractNormalMethod();
+ }
+}</pre>
+<!-- /wp:preformatted -->
+
+<!-- wp:heading -->
+<h2>2.接口(interface)</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>接口可以说是一种更极端的抽象思想，从字面上理解interface不光有“接口”的意思，它的更通俗的意思是“界面”。这也就是说，接口只提供了暴露到表面的东西，至于这些暴露出来的接口提供的功能，是由实现接口的方法完成的，更像是一个黑盒，或者说类之间沟通的一种协议(protocol)。因此接口具有下列特性：</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol><li>接口中只能有常量和方法声明。其中常量也就是public static final限制，方法自动用public abstract限制。我们在写程序的时候可以只写public，编译的时候会自动添加；</li><li>接口只能继承其他接口（允许多继承），不能继承其他类；</li><li>一旦确定了某个类要实现某一接口，则必须实现接口中声明的全部方法，此类也可以有自己的方法；</li><li>类可以同时实现多个接口，这一点弥补了Java不支持类的多继承的问题。（多继承不一定是一件好事，C++由于支持多继承而防止类之间产生二义性引入了虚基类、虚继承等概念，非常复杂）。</li></ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>下面是一个示例程序，用来简单实现一下上面谈到的一些特性。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>
+interface myOldface &#123;
+    public static final int OLD = 8;
+    public abstract void oldface();
+&#125;
+
+interface myFace2 extends myOldface &#123;
+    public String getFaceinfo();
+&#125;
+
+class faceFuc implements myOldface, myFace2 &#123;
+    public String getFaceinfo() &#123;
+        return "imstring";
+    &#125;
+
+    public void oldface() &#123;
+        System.out.println("CODE221:OLDface");
+    &#125;
+&#125;
+
+public class interface2 &#123;
+    public static void main(String[] argv) &#123;
+        System.out.println(myOldface.OLD);
+        myOldface fMyOldface = new faceFuc();
+        fMyOldface.oldface();
+        myFace2 ffMyFace2 = new faceFuc();
+        System.out.println(ffMyFace2.getFaceinfo());
+    &#125;
+&#125;
+/** OUTPUT
+8
+CODE221:OLDface
+imstring
+*/</code></pre>
+<!-- /wp:code --></div></div>
+<!-- /wp:group -->
+
+<p>在这里，我们实际上利用了接口的回调(callback)技术。所谓回调技术是指，用一个接口变量可以存放实现接口的类的引用，通过此变量可以直接调用类中的接口方法。</p>
+<p><strong>至此，我们已经全部接触了Java中的三种引用类型：数组、类、接口。</strong></p></div></article></div></main><footer><div class="paginator"><a class="prev" href="/2020/04/08/echo_139/">上一篇</a><a class="next" href="/2020/03/04/echo_68/">下一篇</a></div><div class="copyright"><p>© 2019 - 2023 <a href="https://wylapp.github.io">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">蒙ICP备20000657号</a>| <a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=15078102000235"><img src="https://www.sohu.com/upload/images/server/ghs.png">蒙公网安备15078102000235号</a> </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

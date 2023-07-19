@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Java之内部类和匿名类 · 我的技术</title><meta name="description" content="Java之内部类和匿名类 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="https://wylapp.github.io/atom.xml" title="我的技术"><meta name="generator" content="Hexo 6.2.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/heading.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Java之内部类和匿名类</h1><div class="post-info">2020年4月8日</div><div class="post-content"><h2>1.内部类</h2>
+<p>在之前的学习中，我们了解了关于类的很多知识，但是那个时候我们写的类都只包含变量和方法。其实在Java中类的内部是可以潜逃类的，这样的嵌套类就叫做<strong>内部类</strong>。很多外部类和内部类具有很多共性，这里就不再赘述，今天主要想写一写内部类区别于外部类的特征。</p>
+<span id="more"></span>
+<ul>
+<li>内部类中也可以有静态方法和静态变量，但是这时就要求内部类本身必须是静态的；</li>
+<li>外部类不能访问内部类的实例域，但是内部类可以访问外部类的实例域和静态域，需要借助<code>.this</code>关键字；</li>
+<li>在公共类中可以实例化外部类，但是这时内部类不会被实例化；也可以单独实例化内部类</li>
+<li>单独实例化内部类要求外部类已经实例化，并且要借助<code>.new</code>关键字</li>
+<li>内部类之间可以相互实例化、调用。</li>
+</ul>
+<p>下面的代码很好地展示了上述特性。</p>
+<pre><code class="language-Java">import static java.lang.System.out;
+class outer&#123;
+private int data2;
+public static int DAAD;
+public outer() &#123;
+    this.data2 = 32;
+&#125;
+private class in1&#123;
+    private int in1_data;
+    public in1() &#123;
+        this.in1_data=12;
+    &#125;
+    public int getIn1() &#123;
+        return in1_data;
+    &#125;
+&#125;
+public class in2&#123;
+    private double in2_data;
+    in2(double data2)&#123;
+        this.in2_data = data2;
+    &#125;
+    public void show2() &#123;
+        out.println("this is in2"+this.in2_data);
+        out.println(new in3().getin2());
+    &#125;
+    public int showout() &#123;
+        return outer.this.data2;
+    &#125;
+&#125;
+public class in3 extends in1&#123;
+    //public static String A3 ="in3 static str"; ERROR
+    public in3() &#123;
+        super();
+    &#125;
+    public in2 getin2() &#123;
+        return new in2(33.2);
+    &#125;
+&#125;
+public static class in4&#123;
+    public static double aa4=4.33;
+    public static double getaa4() &#123;
+        return aa4;
+    &#125;
+&#125;
+&#125;
+public class Innerclass &#123;
+public static void main(String[] args) &#123;
+    // TODO Auto-generated method stub
+    outer o1 = new outer();
+    outer.in2 ii2 = o1.new in2(3.1412);
+    ii2.show2();
+    out.println("inner access outclass"+ii2.showout());
+    out.println(outer.in4.getaa4());
+&#125;
+&#125;</code></pre>
+<h2>2.匿名类</h2>
+<p>匿名类其实是对内部类的扩展……</p>
+<p><!--more--></p>
+<p><span style="color: #3366ff;"><em>作者按：在参考了无数的国内Java教材后，我还是选择了参考英文原版的&lt;Thinking in Java&gt;，与其看中文版作者语焉不详，不如坐下来仔细研读一下英文版教材。</em></span></p>
+
+<!-- wp:paragraph -->
+<p></p>
+<!-- /wp:paragraph --></div></article></div></main><footer><div class="paginator"><a class="prev" href="/2020/08/20/echo_155/">上一篇</a><a class="next" href="/2020/04/02/echo_109/">下一篇</a></div><div class="copyright"><p>© 2019 - 2023 <a href="https://wylapp.github.io">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">蒙ICP备20000657号</a>| <a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=15078102000235"><img src="https://www.sohu.com/upload/images/server/ghs.png">蒙公网安备15078102000235号</a> </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
