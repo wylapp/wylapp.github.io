@@ -1,1 +1,641 @@
-<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 我的技术</title><meta name="description" content="A Blog Powered By Hexo"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="https://wylapp.github.io/atom.xml" title="我的技术"><meta name="generator" content="Hexo 6.2.0"></head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/heading.svg" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="archive"><h2 class="archive-year">2021</h2><div class="post-item"><div class="post-info">2021年3月5日</div><a class="post-title-link" href="/2021/03/05/echo_226/">快读-模板</a></div><div class="post-item"><div class="post-info">2021年2月2日</div><a class="post-title-link" href="/2021/02/02/echo_218/">C++大数模版-面向对象实现</a></div><h2 class="archive-year">2020</h2><div class="post-item"><div class="post-info">2020年12月29日</div><a class="post-title-link" href="/2020/12/29/echo_199/">操作系统课程设计报告上交</a></div><div class="post-item"><div class="post-info">2020年12月17日</div><a class="post-title-link" href="/2020/12/17/echo_160/">纪念一下，matplotlib画出了想要的图</a></div><div class="post-item"><div class="post-info">2020年8月20日</div><a class="post-title-link" href="/2020/08/20/echo_157/">NFS读写性能测试</a></div><div class="post-item"><div class="post-info">2020年8月20日</div><a class="post-title-link" href="/2020/08/20/echo_155/">在Linux下更换用户名</a></div><div class="post-item"><div class="post-info">2020年4月8日</div><a class="post-title-link" href="/2020/04/08/echo_139/">Java之内部类和匿名类</a></div><div class="post-item"><div class="post-info">2020年4月2日</div><a class="post-title-link" href="/2020/04/02/echo_109/">Java的抽象类、接口</a></div><div class="post-item"><div class="post-info">2020年3月4日</div><a class="post-title-link" href="/2020/03/04/echo_68/">如何快速打开文件夹位置的cmd窗口</a></div></div></main><footer><div class="paginator"><a class="prev" href="/archives/">上一页</a></div><div class="copyright"><p>© 2019 - 2023 <a href="https://wylapp.github.io">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.</p><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">蒙ICP备20000657号</a>| <a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=15078102000235"><img src="https://www.sohu.com/upload/images/server/ghs.png">蒙公网安备15078102000235号</a> </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+    
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>Archive | My::tech</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta property="og:type" content="website">
+<meta property="og:title" content="My::tech">
+<meta property="og:url" content="https://wylapp.github.io/archives/page/2/index.html">
+<meta property="og:site_name" content="My::tech">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">My::tech</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/tags/" class="navbar-menu button">标签</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">标签</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+    <div class="cover">
+        <div class="cover__logo">
+            
+                <h1>My::tech Blog</h1>
+            
+        </div>
+        
+        
+            <div class="cover__intro">
+                <p>Elsewhere to write something.</p>
+ 
+            </div>
+        
+    </div>
+
+            
+<main class='main'>
+    
+        <div class="archives">
+            
+                    <div class="archives-item">
+                        <div class="archives-left">
+                            <div class="archives-icon icon-lg"></div>
+                        </div>
+                        <div class="archives-content">
+                            <h3 class="archives-year">2022</h3>
+                        </div>
+                    </div>
+                
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        06-16
+                        &nbsp;
+                        <a href="/2022/06/16/net1/">
+                            <span class="archives-title">
+                                
+                                    家庭网络优化记录(I)
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        04-13
+                        &nbsp;
+                        <a href="/2022/04/13/echo_424/">
+                            <span class="archives-title">
+                                
+                                    TLS证书链缺失导致小程序网络请求失败
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        04-01
+                        &nbsp;
+                        <a href="/2022/04/01/echo_420/">
+                            <span class="archives-title">
+                                
+                                    CS224N-Assignment#4 Review
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        02-19
+                        &nbsp;
+                        <a href="/2022/02/19/echo_416/">
+                            <span class="archives-title">
+                                
+                                    RDBMS与混合设计范式
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        01-30
+                        &nbsp;
+                        <a href="/2022/01/30/echo_413/">
+                            <span class="archives-title">
+                                
+                                    博客迁移的第一篇记事
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        01-30
+                        &nbsp;
+                        <a href="/2022/01/30/echo_412/">
+                            <span class="archives-title">
+                                
+                                    修复Python爬虫SSL错误
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                    <div class="archives-item">
+                        <div class="archives-left">
+                            <div class="archives-icon icon-lg"></div>
+                        </div>
+                        <div class="archives-content">
+                            <h3 class="archives-year">2021</h3>
+                        </div>
+                    </div>
+                
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        11-06
+                        &nbsp;
+                        <a href="/2021/11/06/echo_363/">
+                            <span class="archives-title">
+                                
+                                    axios(或jQuery)异步下载文件的有效方法
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        10-29
+                        &nbsp;
+                        <a href="/2021/10/29/echo_353/">
+                            <span class="archives-title">
+                                
+                                    word2vec简单实现
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        07-17
+                        &nbsp;
+                        <a href="/2021/07/17/echo_258/">
+                            <span class="archives-title">
+                                
+                                    uWSGI应用发布随笔
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        06-08
+                        &nbsp;
+                        <a href="/2021/06/08/echo_235/">
+                            <span class="archives-title">
+                                
+                                    编译原理实验报告提交
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        03-05
+                        &nbsp;
+                        <a href="/2021/03/05/echo_226/">
+                            <span class="archives-title">
+                                
+                                    快读-模板
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        02-02
+                        &nbsp;
+                        <a href="/2021/02/02/echo_218/">
+                            <span class="archives-title">
+                                
+                                    C++大数模版-面向对象实现
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                    <div class="archives-item">
+                        <div class="archives-left">
+                            <div class="archives-icon icon-lg"></div>
+                        </div>
+                        <div class="archives-content">
+                            <h3 class="archives-year">2020</h3>
+                        </div>
+                    </div>
+                
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        12-29
+                        &nbsp;
+                        <a href="/2020/12/29/echo_199/">
+                            <span class="archives-title">
+                                
+                                    操作系统课程设计报告上交
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        12-17
+                        &nbsp;
+                        <a href="/2020/12/17/echo_160/">
+                            <span class="archives-title">
+                                
+                                    纪念一下，matplotlib画出了想要的图
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        08-20
+                        &nbsp;
+                        <a href="/2020/08/20/echo_157/">
+                            <span class="archives-title">
+                                
+                                    NFS读写性能测试
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        08-20
+                        &nbsp;
+                        <a href="/2020/08/20/echo_155/">
+                            <span class="archives-title">
+                                
+                                    在Linux下更换用户名
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        04-08
+                        &nbsp;
+                        <a href="/2020/04/08/echo_139/">
+                            <span class="archives-title">
+                                
+                                    Java之内部类和匿名类
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        04-02
+                        &nbsp;
+                        <a href="/2020/04/02/echo_109/">
+                            <span class="archives-title">
+                                
+                                    Java的抽象类、接口
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+                <div class="archives-item">
+                    <div class="archives-left">
+                        <div class="archives-icon">
+
+                        </div>
+                    </div>
+                    <span class="archives-content">
+                        03-04
+                        &nbsp;
+                        <a href="/2020/03/04/echo_68/">
+                            <span class="archives-title">
+                                
+                                    如何快速打开文件夹位置的cmd窗口
+                                
+                            </span>
+                        </a>
+                        <br><br>
+                    </span>
+                </div>
+            
+        </div>
+    
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">My::tech</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+         
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('false'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
