@@ -149,8 +149,23 @@
 </div>
 
 
+    <aside class="post-side">
+        <div class="post-side__toc">
+            
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">文章目录</div>
+        
+    </div>
 
-<article class="post content-card">
+
+<article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
         <!--markdown-->最开始学数据库系统课程的时候，接触的都是普通的关系型数据库。关系型数据库的表结构（scheme）定义是先于数据存储的，这也就意味着数据项的结构（即数据项内部包含的数据元素，映射为数据库的列）发生改变，则需要整体调节表结构。在面向对象程序设计中，一张数据库中的表对应着一个类，即每一行能实例化为一个对象。频繁的表结构改变将给数据维护带来很大麻烦，包括但不限于以下问题及风险：
@@ -170,18 +185,18 @@
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>ChrAlpha
+            <strong>本文作者：</strong>ChrAlpha
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2022/02/19/echo_416/">https://wylapp.github.io/2022/02/19/echo_416/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2022-06-15</p></div> 
+    <div class="post-footer__meta"><p>更新于 2022-06-15</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
@@ -195,7 +210,7 @@
                     </div>
                     <div>
                         <div class="nav__label">
-                            Previous Post
+                            上一篇
                         </div>
                         <div class="nav__title">
                             CS224N-Assignment#4 Review
@@ -209,7 +224,7 @@
                 <a href="/2022/01/30/echo_413/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             博客迁移的第一篇记事
@@ -230,7 +245,13 @@
 </main>
 
             <footer class="footer">
-    
+     
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
     
 
 

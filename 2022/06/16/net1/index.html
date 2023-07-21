@@ -152,8 +152,23 @@
 </div>
 
 
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E6%AE%8B%E7%BC%BA%E7%9A%84%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="toc-number">1.</span> <span class="toc-text">路由器残缺的协议栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SLAAC%E5%92%8CDHCPv6"><span class="toc-number">2.</span> <span class="toc-text">SLAAC和DHCPv6</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">文章目录</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E6%AE%8B%E7%BC%BA%E7%9A%84%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="toc-number">1.</span> <span class="toc-text">路由器残缺的协议栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SLAAC%E5%92%8CDHCPv6"><span class="toc-number">2.</span> <span class="toc-text">SLAAC和DHCPv6</span></a></li></ol>
+    </div>
 
-<article class="post content-card">
+
+<article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
         <p>这个系列预计会有多篇文章，每一篇聚焦一两个问题，在这一篇主要考虑IPv6的问题。<br>IPv6已经是大势所趋，未来一定会大规模部署使用，实际上现在的骨干网早已支持该协议，真正的痛点出在“最后一公里”，也就是家里的路由器上。绝大部分2018年之前购买的路由器内部完全没有或部分残缺IPv6协议栈，即便现代操作系统普遍支持该协议，在这样的网络环境下，难以真正分配得到可用v6地址。</p>
@@ -207,18 +222,18 @@
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>ChrAlpha
+            <strong>本文作者：</strong>ChrAlpha
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2022/06/16/net1/">https://wylapp.github.io/2022/06/16/net1/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2022-06-17</p></div> 
+    <div class="post-footer__meta"><p>更新于 2022-06-17</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
@@ -226,13 +241,27 @@
     <div class="nav">
         <div class="nav__prev">
             
+                <a href="/2023/05/10/linux-mgrscrpts/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            上一篇
+                        </div>
+                        <div class="nav__title">
+                            常用Linux管理命令
+                        </div>
+                    </div>
+                </a>
+            
         </div>
         <div class="nav__next">
             
                 <a href="/2022/04/13/echo_424/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             TLS证书链缺失导致小程序网络请求失败
@@ -253,7 +282,13 @@
 </main>
 
             <footer class="footer">
-    
+     
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
     
 
 

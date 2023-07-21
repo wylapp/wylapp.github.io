@@ -152,8 +152,23 @@
 </div>
 
 
+    <aside class="post-side">
+        <div class="post-side__toc">
+            
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">文章目录</div>
+        
+    </div>
 
-<article class="post content-card">
+
+<article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
         <!--markdown-->python的网络套接字部分依赖外部标准ssl库。一般在Windows上这个问题不大，Linux上需要正确安装`libssl`并且有可用的ssl.h头文件，这是很多问题的源头，因为有些Linux发行版使用了过时的libssl版本，解决依赖冲突会很麻烦。如果系统中的ssl库版本不符合要求，则安装后的python不能使用ssl访问（pip的使用都会受到限制）。
@@ -168,18 +183,18 @@
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>ChrAlpha
+            <strong>本文作者：</strong>ChrAlpha
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2022/01/30/echo_412/">https://wylapp.github.io/2022/01/30/echo_412/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2022-06-15</p></div> 
+    <div class="post-footer__meta"><p>更新于 2022-06-15</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
@@ -193,7 +208,7 @@
                     </div>
                     <div>
                         <div class="nav__label">
-                            Previous Post
+                            上一篇
                         </div>
                         <div class="nav__title">
                             博客迁移的第一篇记事
@@ -207,7 +222,7 @@
                 <a href="/2021/11/06/echo_363/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             axios(或jQuery)异步下载文件的有效方法
@@ -228,7 +243,13 @@
 </main>
 
             <footer class="footer">
-    
+     
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
     
 
 

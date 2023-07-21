@@ -33,19 +33,17 @@
 
     <!-- OpenGraph -->
  
-    <meta name="description" content="import matplotlib.pyplot as plt import base64 import numpy as np import pandas as pd import os from io import BytesIO  def survivalPlt():    grid3 &#x3D; pd.read_excel(os.path.join(&quot;..&#x2F;&amp;qu">
-<meta property="og:type" content="article">
+    <meta property="og:type" content="article">
 <meta property="og:title" content="纪念一下，matplotlib画出了想要的图">
 <meta property="og:url" content="https://wylapp.github.io/2020/12/17/echo_160/index.html">
 <meta property="og:site_name" content="My::tech">
-<meta property="og:description" content="import matplotlib.pyplot as plt import base64 import numpy as np import pandas as pd import os from io import BytesIO  def survivalPlt():    grid3 &#x3D; pd.read_excel(os.path.join(&quot;..&#x2F;&amp;qu">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://imageproxy.chaoxing.com/0x0,q100,png,sugvv7QREdX8aOsi1j57Bb1cEwM9yt2A8L_tMewb6t68/http://p.ananas.chaoxing.com/star3/origin/785323bf203af0e49dc213131673b308.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64ba11391ddac507ccc76115.png">
 <meta property="article:published_time" content="2020-12-17T13:27:00.000Z">
-<meta property="article:modified_time" content="2022-06-15T12:50:08.320Z">
+<meta property="article:modified_time" content="2023-07-21T05:01:56.243Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://imageproxy.chaoxing.com/0x0,q100,png,sugvv7QREdX8aOsi1j57Bb1cEwM9yt2A8L_tMewb6t68/http://p.ananas.chaoxing.com/star3/origin/785323bf203af0e49dc213131673b308.png">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/64ba11391ddac507ccc76115.png">
 
 
     
@@ -151,38 +149,45 @@
 </div>
 
 
+    <aside class="post-side">
+        <div class="post-side__toc">
+            
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">文章目录</div>
+        
+    </div>
 
-<article class="post content-card">
+
+<article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
-        <span id="more"></span>
-<p><img src="http://imageproxy.chaoxing.com/0x0,q100,png,sugvv7QREdX8aOsi1j57Bb1cEwM9yt2A8L_tMewb6t68/http://p.ananas.chaoxing.com/star3/origin/785323bf203af0e49dc213131673b308.png" alt="" /></p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import base64
-import numpy as np
-import pandas as pd
-import os
-from io import BytesIO
+        <p><img src="https://pic.imgdb.cn/item/64ba11391ddac507ccc76115.png" alt="" /></p>
 
-<p>def survivalPlt():<br>    grid3 &#x3D; pd.read_excel(os.path.join(&quot;..&#x2F;&quot;, &quot;uploadfiles&quot;, &quot;S2_data.xlsx&quot;), index_col&#x3D;0, header&#x3D;0)<br>    # projectNames &#x3D; np.array(grid3._stat_axis.values.tolist())<br>    # projectCensors &#x3D; np.array(grid3.iloc[:, 0]).reshape((1, -1))[0]<br>    # projectLife &#x3D; np.array(grid3.iloc[:, 1]).reshape((1, -1))[0]<br>    lifes &#x3D; grid3.iloc[:, 1]<br>    stats &#x3D; grid3.iloc[:, 0]<br>    deadx &#x3D; []<br>    deady &#x3D; []<br>    livex &#x3D; []<br>    livey &#x3D; []<br>    for id,items in enumerate(lifes):<br>        if stats[id] &#x3D;&#x3D; 1:<br>            deadx.append(id)<br>            deady.append(items)<br>        else:<br>            livex.append(id)<br>            livey.append(items)<br>    figure &#x3D; plt.figure(figsize&#x3D;(15, 4))<br>    ax &#x3D; figure.add_subplot(111)<br>    ax.set_frame_on(b&#x3D;False)<br>    # ax.use_sticky_edges(True)<br>    ax.grid(True, linestyle&#x3D;&quot;-.&quot;)<br>    for key, spine in ax.spines.items():<br>        # &amp;#039;left&amp;#039;, &amp;#039;right&amp;#039;, &amp;#039;bottom&amp;#039;, &amp;#039;top&amp;#039;<br>        if key &#x3D;&#x3D; &amp;#039;right&amp;#039; or key &#x3D;&#x3D; &amp;#039;top&amp;#039;:<br>            spine.set_visible(False)<br>    ax.set_xmargin(0)<br>    ax.set_ymargin(0)<br>    ax.yaxis.set_label_position(&quot;right&quot;)<br>    ax.tick_params(axis&#x3D;&quot;y&quot;, direction&#x3D;&quot;inout&quot;, pad&#x3D;-28, labelleft&#x3D;&quot;on&quot;, left&#x3D;False)<br>    ax.tick_params(axis&#x3D;&quot;x&quot;, bottom&#x3D;False)<br>    ax.set_xticklabels([])<br>    ax.scatter(deadx, deady, c&#x3D;&quot;tomato&quot;)<br>    ax.scatter(livex, livey, c&#x3D;&quot;darkturquoise&quot;)<br>    picIO &#x3D; BytesIO()<br>    plt.savefig(&quot;down.png&quot;, bbox_inches&#x3D;&amp;#039;tight&amp;#039;, pad_inches&#x3D;0.0)<br>    plt.savefig(picIO, bbox_inches&#x3D;&amp;#039;tight&amp;#039;, pad_inches&#x3D;0.0)<br>    data &#x3D; base64.encodebytes(picIO.getvalue()).decode()<br>    print(&amp;#039;data:image&#x2F;png;base64,&amp;#039; + str(data))<br>    plt.show()</p>
-<p>if <strong>name</strong> &#x3D;&#x3D; &amp;#039;<strong>main</strong>&amp;#039;:<br>    survivalPlt()</code></pre></p>
-
+<span id="more"></span>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">survivalPlt</span>():</span><br><span class="line">    grid3 = pd.read_excel(os.path.join(&amp;quot;../&amp;quot;, &amp;quot;uploadfiles&amp;quot;, &amp;quot;S2_data.xlsx&amp;quot;), index_col=<span class="number">0</span>, header=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># projectNames = np.array(grid3._stat_axis.values.tolist())</span></span><br><span class="line">    <span class="comment"># projectCensors = np.array(grid3.iloc[:, 0]).reshape((1, -1))[0]</span></span><br><span class="line">    <span class="comment"># projectLife = np.array(grid3.iloc[:, 1]).reshape((1, -1))[0]</span></span><br><span class="line">    lifes = grid3.iloc[:, <span class="number">1</span>]</span><br><span class="line">    stats = grid3.iloc[:, <span class="number">0</span>]</span><br><span class="line">    deadx = []</span><br><span class="line">    deady = []</span><br><span class="line">    livex = []</span><br><span class="line">    livey = []</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">id</span>,items <span class="keyword">in</span> <span class="built_in">enumerate</span>(lifes):</span><br><span class="line">        <span class="keyword">if</span> stats[<span class="built_in">id</span>] == <span class="number">1</span>:</span><br><span class="line">            deadx.append(<span class="built_in">id</span>)</span><br><span class="line">            deady.append(items)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            livex.append(<span class="built_in">id</span>)</span><br><span class="line">            livey.append(items)</span><br><span class="line">    figure = plt.figure(figsize=(<span class="number">15</span>, <span class="number">4</span>))</span><br><span class="line">    ax = figure.add_subplot(<span class="number">111</span>)</span><br><span class="line">    ax.set_frame_on(b=<span class="literal">False</span>)</span><br><span class="line">    <span class="comment"># ax.use_sticky_edges(True)</span></span><br><span class="line">    ax.grid(<span class="literal">True</span>, linestyle=&amp;quot;-.&amp;quot;)</span><br><span class="line">    <span class="keyword">for</span> key, spine <span class="keyword">in</span> ax.spines.items():</span><br><span class="line">        <span class="comment"># &amp;#039;left&amp;#039;, &amp;#039;right&amp;#039;, &amp;#039;bottom&amp;#039;, &amp;#039;top&amp;#039;</span></span><br><span class="line">        <span class="keyword">if</span> key == &amp;<span class="comment">#039;right&amp;#039; or key == &amp;#039;top&amp;#039;:</span></span><br><span class="line">            spine.set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.set_xmargin(<span class="number">0</span>)</span><br><span class="line">    ax.set_ymargin(<span class="number">0</span>)</span><br><span class="line">    ax.yaxis.set_label_position(&amp;quot;right&amp;quot;)</span><br><span class="line">    ax.tick_params(axis=&amp;quot;y&amp;quot;, direction=&amp;quot;inout&amp;quot;, pad=-<span class="number">28</span>, labelleft=&amp;quot;on&amp;quot;, left=<span class="literal">False</span>)</span><br><span class="line">    ax.tick_params(axis=&amp;quot;x&amp;quot;, bottom=<span class="literal">False</span>)</span><br><span class="line">    ax.set_xticklabels([])</span><br><span class="line">    ax.scatter(deadx, deady, c=&amp;quot;tomato&amp;quot;)</span><br><span class="line">    ax.scatter(livex, livey, c=&amp;quot;darkturquoise&amp;quot;)</span><br><span class="line">    picIO = BytesIO()</span><br><span class="line">    plt.savefig(&amp;quot;down.png&amp;quot;, bbox_inches=&amp;<span class="comment">#039;tight&amp;#039;, pad_inches=0.0)</span></span><br><span class="line">    plt.savefig(picIO, bbox_inches=&amp;<span class="comment">#039;tight&amp;#039;, pad_inches=0.0)</span></span><br><span class="line">    data = base64.encodebytes(picIO.getvalue()).decode()</span><br><span class="line">    <span class="built_in">print</span>(&amp;<span class="comment">#039;data:image/png;base64,&amp;#039; + str(data))</span></span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == &amp;<span class="comment">#039;__main__&amp;#039;:</span></span><br><span class="line">    survivalPlt()</span><br></pre></td></tr></table></figure>
     </div>
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>ChrAlpha
+            <strong>本文作者：</strong>ChrAlpha
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2020/12/17/echo_160/">https://wylapp.github.io/2020/12/17/echo_160/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2022-06-15</p></div> 
+    <div class="post-footer__meta"><p>更新于 2023-07-21</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
@@ -196,7 +201,7 @@ from io import BytesIO
                     </div>
                     <div>
                         <div class="nav__label">
-                            Previous Post
+                            上一篇
                         </div>
                         <div class="nav__title">
                             操作系统课程设计报告上交
@@ -210,7 +215,7 @@ from io import BytesIO
                 <a href="/2020/08/20/echo_157/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             NFS读写性能测试
@@ -231,7 +236,13 @@ from io import BytesIO
 </main>
 
             <footer class="footer">
-    
+     
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
     
 
 

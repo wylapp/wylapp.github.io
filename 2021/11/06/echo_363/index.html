@@ -40,15 +40,15 @@
 <meta property="og:site_name" content="My::tech">
 <meta property="og:description" content="相当长一段时间，我做的项目中下载文件都是通过点击&lt;a href&#x3D;&quot;link&quot;&gt;&lt;&#x2F;a&gt;这样的链接实现的，这种做法虽然比较简单，但是也存在一定弊端。比如后端接口一旦生成文件失败，点击这个链接后打开的页面就不会自动关闭，带来了很不好的用户体验；下载文件的操作完全可以异步实现，目前这种做法是同步的，显然效率不高。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://generalapi.top/wp-content/uploads/2021/11/image-1636194799712.png">
-<meta property="og:image" content="https://generalapi.top/wp-content/uploads/2021/11/image-1636196412066.png">
-<meta property="og:image" content="https://generalapi.top/wp-content/uploads/2021/11/image-1636197923311.png">
-<meta property="og:image" content="https://generalapi.top/wp-content/uploads/2021/11/image-1636198198409.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64ba0e6d1ddac507ccbcce65.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64ba0dbd1ddac507ccba50f5.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64ba0eb91ddac507ccbde88a.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64ba0f001ddac507ccbee500.png">
 <meta property="article:published_time" content="2021-11-06T12:07:00.000Z">
-<meta property="article:modified_time" content="2023-07-14T08:34:08.044Z">
+<meta property="article:modified_time" content="2023-07-21T04:52:39.241Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://generalapi.top/wp-content/uploads/2021/11/image-1636194799712.png">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/64ba0e6d1ddac507ccbcce65.png">
 
 
     
@@ -154,8 +154,23 @@
 </div>
 
 
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">服务端生成文件字节流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">直接使用超链接不行吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">上手异步文件下载</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">文章目录</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">服务端生成文件字节流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">直接使用超链接不行吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">上手异步文件下载</span></a></li></ol>
+    </div>
 
-<article class="post content-card">
+
+<article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
         <p>相当长一段时间，我做的项目中下载文件都是通过点击<code>&lt;a href=&quot;link&quot;&gt;&lt;/a&gt;</code>这样的链接实现的，这种做法虽然比较简单，但是也存在一定弊端。比如后端接口一旦生成文件失败，点击这个链接后打开的页面就不会自动关闭，带来了很不好的用户体验；下载文件的操作完全可以异步实现，目前这种做法是同步的，显然效率不高。
@@ -164,14 +179,14 @@
 <p>借助jQuery,axios我们可以轻松发起<code>XHR</code>，这就意味着距离实现下载功能，只差在如何将请求的对象保存在本地这一步。首先回顾服务端是如何将文件转换为流的方式发送到前端的。</p></p>
 <h2>服务端生成文件字节流</h2>
 <p>这里以Python为例。使用<code>BytesIO</code>可以轻松地将磁盘文件转换为内存文件。实际上BytesIO对象的读写过程对用户是透明的。绝大部分利用磁盘文件指针进行读写的情景，都可以使用<code>BytesIO</code>对象代替</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_proceed_file</span>(<span class="params">self, grid</span>):</span><br><span class="line">     csvtemp = BytesIO()</span><br><span class="line">     griddata = []</span><br><span class="line">     columns = [&amp;<span class="comment">#039;订单编号&amp;#039;, &amp;#039;姓名&amp;#039;, &amp;#039;学号&amp;#039;, &amp;#039;物品编号&amp;#039;]</span></span><br><span class="line">     <span class="keyword">for</span> obj <span class="keyword">in</span> grid:</span><br><span class="line">         griddata.append([obj.order_id, obj.student.name, obj.student.xh,</span><br><span class="line">                          obj.item.item,])</span><br><span class="line">     celldatas = pd.DataFrame(griddata, columns=columns)</span><br><span class="line">     celldatas.to_excel(csvtemp, index=<span class="literal">None</span>)</span><br><span class="line">     <span class="keyword">return</span> csvtemp</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> BytesIO</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_proceed_file</span>(<span class="params">self, grid</span>):</span><br><span class="line">     csvtemp = BytesIO()</span><br><span class="line">     griddata = []</span><br><span class="line">     columns = [<span class="string">&quot;订单编号&quot;</span>, <span class="string">&quot;姓名&quot;</span>, <span class="string">&quot;学号&quot;</span>, <span class="string">&quot;物品编号&quot;</span>]</span><br><span class="line">     <span class="keyword">for</span> obj <span class="keyword">in</span> grid:</span><br><span class="line">         griddata.append([obj.order_id, obj.student.name, obj.student.xh,</span><br><span class="line">                          obj.item.item,])</span><br><span class="line">     celldatas = pd.DataFrame(griddata, columns=columns)</span><br><span class="line">     celldatas.to_excel(csvtemp, index=<span class="literal">None</span>)</span><br><span class="line">     <span class="keyword">return</span> csvtemp</span><br></pre></td></tr></table></figure>
 <p>上面这一段是从数据库中查询订单信息，并利用<code>pandas.DataFrame</code>存储为Excel表格。我们注意到，<code>to_excel()</code>方法第一个参数原本应该是文件指针或路径，但是这里是一个<code>BytesIO</code>对象。在视图层，我们将这个对象发送给前端。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">download_all</span>(<span class="params">self, request</span>):</span><br><span class="line">    timeline = datetime.datetime.strptime(request.POST[&amp;quot;datetime&amp;quot;], &amp;quot;%Y-%m-%d&amp;quot;)</span><br><span class="line">    find_clothes = order.objects.<span class="built_in">filter</span>(datetime__date=timeline).<span class="built_in">all</span>()</span><br><span class="line">    resxlsx = self._proceed_file(find_clothes)</span><br><span class="line">    resxlsx.seek(<span class="number">0</span>)<span class="comment"># IMPORTANT THIS ROW!</span></span><br><span class="line">    response = FileResponse(resxlsx)</span><br><span class="line">    response[<span class="string">&quot;Content-Type&quot;</span>] = <span class="string">&quot;application/octet-stream&quot;</span></span><br><span class="line">    response[<span class="string">&quot;Content-Disposition&quot;</span>] = <span class="string">&quot;attachment; filename=&#123;&#125;.xlsx&quot;</span>.<span class="built_in">format</span>(<span class="string">&quot;&#123;&#125;orders&quot;</span>.<span class="built_in">format</span>(request.POST[<span class="string">&quot;datetime&quot;</span>]))</span><br><span class="line">    <span class="keyword">return</span> response</span><br></pre></td></tr></table></figure>
 <p>这个HTTP响应和普通的响应不太一样。最主要的特征是响应头的<code>Content-Type</code>字段值为<code>application/octet-stream</code>，octet是‘八’的意思，简单说就是8比特流，也就是字节流。如果不加上这一字段，浏览器就会将文件按照默认文本编码，将这些字节编码后直接显示在屏幕上，结果就是满屏幕的乱码，没人能看懂。在<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc2046#section-4.5.1" title="RFC2046">RFC2046</a>中有关于各种取值的详细规定，以及收到字节流以后应该进行的操作。</p>
 <blockquote>
 <p>The recommended action for an implementation that receives an <strong>&quot;application/octet-stream&quot; entity is to simply offer to put the data in a file, with any Content-Transfer-Encoding undone</strong>, or perhaps to use it as input to a user-specified process.</p>
 </blockquote>
-<p><img src="https://generalapi.top/wp-content/uploads/2021/11/image-1636194799712.png" alt="在开发者工具中查看响应头中的Content-Type" />响应头中出现了我们规定的内容类型</p>
+<p><img src="https://pic.imgdb.cn/item/64ba0e6d1ddac507ccbcce65.png" alt="在开发者工具中查看响应头中的Content-Type" /></p>
 <p>至此我们已经知道了最重要的一点，浏览器何时会将响应体<strong>直接存储为文件，而不是显示出来</strong>，取决于响应头中的一些字段。后续利用axios以及jQuery实现异步文件下载，就是利用了这一特点。</p>
 <h2>直接使用超链接不行吗？</h2>
 <p>直接使用超链接，在大多数情况下没问题。但有个别时候却很影响用户体验，因为点击超链接后浏览器往往会跳转打开一个新的窗口或选项卡，在<strong>下载开始后，这个页面才能自动关闭</strong>。这个过程听起来没什么问题，但是下面这两种情况可能对用户并不友好：</p>
@@ -180,49 +195,32 @@
 <li>服务端出错，页面将出现用户看不懂的错误信息，并且需要用户手动关闭</li>
 <li>一些接口在请求时需要附加额外的header，或者使用POST方法，超链接无法实现</li>
 </ul>
-<p><img src="https://generalapi.top/wp-content/uploads/2021/11/image-1636196412066.png" alt="file" />上图是真实开发中的接口。很明显后端开发人员想要告知用户下载文件时出错的原因，并且提供了可供前端使用的<code>JSON</code>响应体，但是前端人员<strong>只是使用了超链接</strong>来处理下载，恰好就遇到了上述的第二个问题。面对突然弹出的错误页面，用户会感到手足无措。</p>
+<p><img src="https://pic.imgdb.cn/item/64ba0dbd1ddac507ccba50f5.png" alt="file" />上图是真实开发中的接口。很明显后端开发人员想要告知用户下载文件时出错的原因，并且提供了可供前端使用的<code>JSON</code>响应体，但是前端人员<strong>只是使用了超链接</strong>来处理下载，恰好就遇到了上述的第二个问题。面对突然弹出的错误页面，用户会感到手足无措。</p>
 <h2>上手异步文件下载</h2>
 <p>已经有太多成熟的js库可以发起<code>XHR(XMLHttpRequest)</code>请求了，也许<code>XHR</code>这个名字有点陌生，但是说起<code>AJAX(Asynchronous Javascript And XML)</code>，大家再熟悉不过了。下面用axios实现异步下载这一过程</p>
-<pre><code class="language-javascript">request(&#123;
-  url: this.$data.pdfurl,
-  responseType: &#039;blob&#039;
-&#125;).then(res =&gt; &#123;
-  const downloadElement = document.createElement(&#039;a&#039;) // 创建虚拟下载DOM节点
-  const href = window.URL.createObjectURL(res) // 挂载下载文件对象
-  downloadElement.href = href
-  downloadElement.download = &#039;学习报告.pdf&#039; // 下载后文件名
-  document.body.appendChild(downloadElement)
-  downloadElement.click() // 点击下载
-  document.body.removeChild(downloadElement) // 下载完成移除元素
-  window.URL.revokeObjectURL(href) // 释放掉blob对象
-  alert(&quot;下载成功&quot;)
-&#125;,
-err =&gt; &#123;
-  alert(&quot;下载失败&quot;)
-  console.log(err)
-&#125;)</code></pre>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">request</span>(&#123;</span><br><span class="line">  <span class="attr">url</span>: <span class="variable language_">this</span>.<span class="property">$data</span>.<span class="property">pdfurl</span>,</span><br><span class="line">  <span class="attr">responseType</span>: <span class="string">&quot;blob&quot;</span></span><br><span class="line">&#125;).<span class="title function_">then</span>(res =&amp;gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> downloadElement = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;a&quot;</span>) <span class="comment">// 创建虚拟下载DOM节点</span></span><br><span class="line">  <span class="keyword">const</span> href = <span class="variable language_">window</span>.<span class="property">URL</span>.<span class="title function_">createObjectURL</span>(res) <span class="comment">// 挂载下载文件对象</span></span><br><span class="line">  downloadElement.<span class="property">href</span> = href</span><br><span class="line">  downloadElement.<span class="property">download</span> = <span class="string">&quot;学习报告.pdf&quot;</span> <span class="comment">// 下载后文件名</span></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(downloadElement)</span><br><span class="line">  downloadElement.<span class="title function_">click</span>() <span class="comment">// 点击下载</span></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">removeChild</span>(downloadElement) <span class="comment">// 下载完成移除元素</span></span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">URL</span>.<span class="title function_">revokeObjectURL</span>(href) <span class="comment">// 释放掉blob对象</span></span><br><span class="line">  <span class="title function_">alert</span>(&amp;quot;下载成功&amp;quot;)</span><br><span class="line">&#125;,</span><br><span class="line">err =&amp;gt; &#123;</span><br><span class="line">  <span class="title function_">alert</span>(&amp;quot;下载失败&amp;quot;)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>下面我们深入探访一下这几行代码执行时到底发生了什么
-<img src="https://generalapi.top/wp-content/uploads/2021/11/image-1636197923311.png" alt="file" />Promise的resolve作用域内完成下载动作</p>
+<img src="https://pic.imgdb.cn/item/64ba0eb91ddac507ccbde88a.png" alt="Promise的resolve作用域内完成下载动作" /></p>
 <p>首先可以确定的是，axios支持<code>Promise</code>写法，能够很好地处理请求成功与失败的情况。请求如果成功，我们使用Javascript中的<code>blob</code>对象承接原本请求得到的字节流；如果失败，那么我们可以给用户友好的提示信息。
 <code>blob</code>对象内部本质上是二进制流，但是八个一组编排一下，也就是字节流了。在异步文件下载这个过程中，<code>blob</code>对象只是一个中间媒介。
-<img src="https://generalapi.top/wp-content/uploads/2021/11/image-1636198198409.png" alt="file" />追加到body的a节点</p>
+<img src="https://pic.imgdb.cn/item/64ba0f001ddac507ccbee500.png" alt="追加到body的a节点" /></p>
 <p>可以看到，在这个过程中我们创建了一个<code>ObjectURL</code>对象，<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/File/Using_files_from_web_applications#%E4%BD%BF%E7%94%A8%E5%AF%B9%E8%B1%A1_url" title="对象URL">对象URL</a>是实现这一过程的核心，每一个对象url都拥有一个全局唯一的地址，例如上图中的<code>blob:http://localhost:9527/490a7d87-745f-4343-b309-5caeaa5c29cd</code>，他们都唯一对应着一个<code>File</code>对象，<code>File</code>建立在<code>blob</code>之上，也就是刚刚承接先行请求响应体的<code>blob</code>对象。a节点的链接直接对应着<code>ObjectURL</code>对象，在上面的代码中我们模拟点击了这个链接，从而触发浏览器的下载机制，也就实现了异步下载。正是由于模拟点击，而且链接的<code>blob</code>对象已经缓存在本地，所以浏览器不会跳转新的页面，而是直接进行下载。</p>
     </div>
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>ChrAlpha
+            <strong>本文作者：</strong>ChrAlpha
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2021/11/06/echo_363/">https://wylapp.github.io/2021/11/06/echo_363/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2023-07-14</p></div> 
+    <div class="post-footer__meta"><p>更新于 2023-07-21</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
@@ -236,7 +234,7 @@ err =&gt; &#123;
                     </div>
                     <div>
                         <div class="nav__label">
-                            Previous Post
+                            上一篇
                         </div>
                         <div class="nav__title">
                             修复Python爬虫SSL错误
@@ -250,7 +248,7 @@ err =&gt; &#123;
                 <a href="/2021/10/29/echo_353/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             word2vec简单实现
@@ -271,7 +269,13 @@ err =&gt; &#123;
 </main>
 
             <footer class="footer">
-    
+     
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
     
 
 
