@@ -35,15 +35,15 @@
 
     <!-- OpenGraph -->
  
-    <meta name="description" content="Not available yet.">
+    <meta name="description" content="使用pandas读写结构化表格文件很常见，但是经常遇到读取文件不完整的问题。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="处理pandas读取tsv文件时切分错误问题">
 <meta property="og:url" content="https://wylapp.github.io/2023/07/20/pandas-tsv/index.html">
 <meta property="og:site_name" content="My::tech">
-<meta property="og:description" content="Not available yet.">
+<meta property="og:description" content="使用pandas读写结构化表格文件很常见，但是经常遇到读取文件不完整的问题。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-07-20T03:26:53.000Z">
-<meta property="article:modified_time" content="2023-07-21T05:12:12.858Z">
+<meta property="article:modified_time" content="2023-07-25T07:38:00.279Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="pandas">
 <meta property="article:tag" content="python">
@@ -78,7 +78,7 @@
 
     <!-- custom head -->
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
     <body>
         <div id="app" tabindex="-1">
@@ -172,8 +172,15 @@
 <article class="post post__with-toc content-card">
     <div class="post__header"></div>
     <div class="post__content">
-        <span id="more"></span>
-<p>Not available yet.</p>
+        <p>使用pandas读写结构化表格文件很常见，但是经常遇到读取文件不完整的问题。</p>
+<span id="more"></span>
+
+<p>在python中，为了从外部读取结构化的表格数据，最常用的方法就是pandas读取，并存为DataFrame结构。如果是逗号分隔的表格，文件名后缀一般是<code>csv</code>，换行符分隔的文件，结尾一般是<code>tsv</code>.</p>
+<p>这两种文件都使用特殊符号进行列的分隔。如果列内部本身包含了分隔符号，则程序解析的时候会发生误判，因此pandas中规定，列本身被引号包裹，则忽略内部的分隔符号。问题在于<strong>有些数据中存在不闭合的引号</strong>，会引发错误解析。因此需要关闭这条规则。</p>
+<p>修改如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.read_csv(join(FILE_PREFIX, <span class="string">&#x27;news.tsv&#x27;</span>), sep=<span class="string">&#x27;\t&#x27;</span>, header=<span class="literal">None</span>, quotechar=<span class="string">&quot; &quot;</span>)</span><br><span class="line">pd.read_table(join(FILE_PREFIX, <span class="string">&#x27;news.tsv&#x27;</span>), sep=<span class="string">&#x27;\t&#x27;</span>, header=<span class="literal">None</span>, quotechar=<span class="string">&quot; &quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果引号本身也具有特殊含义，而列内部又包含特殊分隔符，还可以将<code>quotechar</code>改为其他字符。</p>
 
     </div>
     
@@ -190,7 +197,7 @@
         
     </div>
  
-    <div class="post-footer__meta"><p>更新于 2023-07-21</p></div> 
+    <div class="post-footer__meta"><p>更新于 2023-07-25</p></div> 
     <div class="post-entry__tags"><a href="/tags/pandas/" class="post-tags__link button"># pandas</a><a href="/tags/python/" class="post-tags__link button"># python</a></div> 
 </article>
 
