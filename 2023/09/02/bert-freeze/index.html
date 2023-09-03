@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+    
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>BERT的参数应该如何冻结？ | My::tech</title>
+
+
+    <meta name="keywords" content="python, BERT, transformers">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。 只引入部分层这里的讨论全都基于12层的bert-base-uncased展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层trans">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BERT的参数应该如何冻结？">
+<meta property="og:url" content="https://wylapp.github.io/2023/09/02/bert-freeze/index.html">
+<meta property="og:site_name" content="My::tech">
+<meta property="og:description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。 只引入部分层这里的讨论全都基于12层的bert-base-uncased展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层trans">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64f339eb661c6c8e54d75219.jpg">
+<meta property="article:published_time" content="2023-09-02T13:12:11.000Z">
+<meta property="article:modified_time" content="2023-09-03T03:04:35.256Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="BERT">
+<meta property="article:tag" content="transformers">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/64f339eb661c6c8e54d75219.jpg">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">My::tech</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/tags/" class="navbar-menu button">标签</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">标签</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        BERT的参数应该如何冻结？
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/09/" class="post-meta__date button">2023-09-02</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AA%E5%BC%95%E5%85%A5%E9%83%A8%E5%88%86%E5%B1%82"><span class="toc-number">1.</span> <span class="toc-text">只引入部分层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%BB%E7%BB%93%E9%83%A8%E5%88%86%E5%B1%82%E7%9A%84%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">冻结部分层的参数</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AA%E5%BC%95%E5%85%A5%E9%83%A8%E5%88%86%E5%B1%82"><span class="toc-number">1.</span> <span class="toc-text">只引入部分层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%BB%E7%BB%93%E9%83%A8%E5%88%86%E5%B1%82%E7%9A%84%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">冻结部分层的参数</span></a></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。</p>
+<h2 id="只引入部分层"><a href="#只引入部分层" class="headerlink" title="只引入部分层"></a>只引入部分层</h2><p>这里的讨论全都基于12层的<code>bert-base-uncased</code>展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层transformer的输出更多包含句段级的信息。如果想要只使用最下面8层transformer结构，则可以直接在初始化时进行设定。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pytorch</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"></span><br><span class="line">bert_path = <span class="string">&#x27;bert-base-uncased&#x27;</span></span><br><span class="line">config = AutoConfig.from_pretrained(bert_path)</span><br><span class="line">config.output_hidden_states = <span class="literal">True</span></span><br><span class="line">config.num_hidden_layers = <span class="number">8</span></span><br><span class="line"></span><br><span class="line">bert_layer = AutoModel.from_pretrained(bert_path, config=config)</span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(bert_path, config=config)</span><br></pre></td></tr></table></figure>
+<p><code>config.num_hidden_layers = 8</code>就是对层数的设定，<strong>通常来说都是从最下层开始往上数n层进行保留</strong>，很少有截取中间几层进行保留或者只保留最高几层的。所谓的保留，就是正常加载预训练时得到的参数，不保留的层直接将参数随机化，而且模型的运算过程也不会跟他们有关。在这样的设定下初始化BERT之后，会输出下列提示，提醒用户注意下列层并未初始化。</p>
+<p><img src="https://pic.imgdb.cn/item/64f339eb661c6c8e54d75219.jpg" alt="初始化模型时的提示"></p>
+<p>引入部分层的结果是会改变<code>hidden_states</code>的形状，这是因为没有初始化的层根本不参与运算，自然也就没有输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tys = tokenizer(<span class="string">&quot;this is a test line&quot;</span>, add_special_tokens=<span class="literal">True</span>, truncation=<span class="literal">True</span>,</span><br><span class="line">                                       max_length=<span class="number">24</span>, padding=<span class="string">&#x27;max_length&#x27;</span>)</span><br><span class="line">bert_out = bert_layer(torch.tensor(tys[<span class="string">&quot;input_ids&quot;</span>]).unsqueeze(<span class="number">0</span>), </span><br><span class="line">                      torch.tensor(tys[<span class="string">&quot;attention_mask&quot;</span>]).unsqueeze(<span class="number">0</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(bert_out.hidden_states), bert_out.hidden_states[<span class="number">0</span>].shape)</span><br><span class="line"><span class="comment"># 9 torch.Size([1, 24, 768])</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，尽管这里这保留了8层，但是最终<code>hidden_states</code>中的隐藏层向量却有9个，这是因为最底层的embedding层有一个单独的输出结果也被纳入其中了。如果想取第7层的输出，代码应该写作<code>bert_out.hidden_states[7]</code>而不是<code>bert_out.hidden_states[6]</code>。</p>
+<blockquote>
+<p>关于BERT的输出，可以参考<a target="_blank" rel="noopener" href="https://huggingface.co/docs/transformers/model_doc/bert#transformers.BertModel">https://huggingface.co/docs/transformers/model_doc&#x2F;bert#transformers.BertModel</a></p>
+</blockquote>
+<h2 id="冻结部分层的参数"><a href="#冻结部分层的参数" class="headerlink" title="冻结部分层的参数"></a>冻结部分层的参数</h2><p>首先来查看BERT的各层名称及是否需要梯度（冻结与否），默认所有层均需要梯度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> name ,param <span class="keyword">in</span> bert_layer.named_parameters():</span><br><span class="line">    <span class="built_in">print</span>(name, param.requires_grad)</span><br></pre></td></tr></table></figure>
+<p>输出如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">embeddings.word_embeddings.weight <span class="literal">True</span></span><br><span class="line">embeddings.position_embeddings.weight <span class="literal">True</span></span><br><span class="line">embeddings.token_type_embeddings.weight <span class="literal">True</span></span><br><span class="line">embeddings.LayerNorm.weight <span class="literal">True</span></span><br><span class="line">embeddings.LayerNorm.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.query.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.query.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.key.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.key.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.value.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.self.value.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.output.dense.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.output.dense.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.output.LayerNorm.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.attention.output.LayerNorm.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.intermediate.dense.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.intermediate.dense.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.output.dense.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.output.dense.bias <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.output.LayerNorm.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.0</span>.output.LayerNorm.bias <span class="literal">True</span></span><br><span class="line">...</span><br><span class="line">encoder.layer<span class="number">.11</span>.output.LayerNorm.weight <span class="literal">True</span></span><br><span class="line">encoder.layer<span class="number">.11</span>.output.LayerNorm.bias <span class="literal">True</span></span><br><span class="line">pooler.dense.weight <span class="literal">True</span></span><br><span class="line">pooler.dense.bias <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>我们要关注的，就是所有包含<code>encoder.layer</code>的层，下面给出两种很简单的方式，来对特定层参数进行冻结。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> name, param <span class="keyword">in</span> bert_layer.named_parameters():</span><br><span class="line">  <span class="keyword">if</span> <span class="string">&#x27;encoder.layer.0&#x27;</span> &lt;= name &lt; <span class="string">&#x27;encoder.layer.8&#x27;</span>: </span><br><span class="line">    param.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">  <span class="keyword">for</span> p <span class="keyword">in</span> bert_layer.encoder.layer[i].parameters():</span><br><span class="line">    p.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>这两种效果是等价的，但是都不会冻结最底层embedding层的参数，实际使用中embedding层对模型整体效果的影响不大。如果真的必须冻结embedding层，可以将第一种方法改为如下代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> name, param <span class="keyword">in</span> bert_layer.named_parameters():</span><br><span class="line">  <span class="keyword">if</span> <span class="string">&#x27;encoder.layer.0&#x27;</span> &lt;= name &lt; <span class="string">&#x27;encoder.layer.8&#x27;</span>: </span><br><span class="line">    param.requires_grad = <span class="literal">False</span></span><br><span class="line">  <span class="keyword">if</span> name.startswith(<span class="string">&#x27;embedding&#x27;</span>):</span><br><span class="line">    param.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>MyTech::Author
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="https://wylapp.github.io/2023/09/02/bert-freeze/">https://wylapp.github.io/2023/09/02/bert-freeze/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2023-09-03</p></div> 
+    <div class="post-entry__tags"><a href="/tags/python/" class="post-tags__link button"># python</a><a href="/tags/BERT/" class="post-tags__link button"># BERT</a><a href="/tags/transformers/" class="post-tags__link button"># transformers</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/07/20/pandas-tsv/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            处理pandas读取tsv文件时切分错误问题
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">My::tech</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+         
+
+ 
+
+ 
+
+ 
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement('script');
+            hm.src = 'https://hm.baidu.com/hm.js?547d9dd8a76057093e02e82da7b83f37';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('false'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
