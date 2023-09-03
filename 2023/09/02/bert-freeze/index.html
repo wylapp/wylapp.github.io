@@ -35,16 +35,16 @@
 
     <!-- OpenGraph -->
  
-    <meta name="description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。 只引入部分层这里的讨论全都基于12层的bert-base-uncased展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层trans">
+    <meta name="description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BERT的参数应该如何冻结？">
 <meta property="og:url" content="https://wylapp.github.io/2023/09/02/bert-freeze/index.html">
 <meta property="og:site_name" content="My::tech">
-<meta property="og:description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。 只引入部分层这里的讨论全都基于12层的bert-base-uncased展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层trans">
+<meta property="og:description" content="BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic.imgdb.cn/item/64f339eb661c6c8e54d75219.jpg">
 <meta property="article:published_time" content="2023-09-02T13:12:11.000Z">
-<meta property="article:modified_time" content="2023-09-03T03:04:35.256Z">
+<meta property="article:modified_time" content="2023-09-03T03:09:37.793Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="BERT">
@@ -167,7 +167,7 @@
         </svg>
     </a>
     <div class="toc-menus" id="toc-menus">
-        <div class="toc-title">Article Directory</div>
+        <div class="toc-title">文章目录</div>
         <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AA%E5%BC%95%E5%85%A5%E9%83%A8%E5%88%86%E5%B1%82"><span class="toc-number">1.</span> <span class="toc-text">只引入部分层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%BB%E7%BB%93%E9%83%A8%E5%88%86%E5%B1%82%E7%9A%84%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">冻结部分层的参数</span></a></li></ol>
     </div>
 
@@ -176,6 +176,8 @@
     <div class="post__header"></div>
     <div class="post__content">
         <p>BERT是极具代表性的预训练语言模型，几乎是现在很多语言理解任务，甚至是数据挖掘任务的基座。由于种种原因，部分任务在使用BERT的时候需要冻结部分参数，或者只引入部分层，因此需要对BERT中的参数进行冻结（或解冻）处理。</p>
+<span id="more"></span>
+
 <h2 id="只引入部分层"><a href="#只引入部分层" class="headerlink" title="只引入部分层"></a>只引入部分层</h2><p>这里的讨论全都基于12层的<code>bert-base-uncased</code>展开，其他模型变体也是类似的。一般来说底层transformer的输出包含更多的词语级信息，高层transformer的输出更多包含句段级的信息。如果想要只使用最下面8层transformer结构，则可以直接在初始化时进行设定。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pytorch</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoConfig, AutoModel</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line"></span><br><span class="line">bert_path = <span class="string">&#x27;bert-base-uncased&#x27;</span></span><br><span class="line">config = AutoConfig.from_pretrained(bert_path)</span><br><span class="line">config.output_hidden_states = <span class="literal">True</span></span><br><span class="line">config.num_hidden_layers = <span class="number">8</span></span><br><span class="line"></span><br><span class="line">bert_layer = AutoModel.from_pretrained(bert_path, config=config)</span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(bert_path, config=config)</span><br></pre></td></tr></table></figure>
 <p><code>config.num_hidden_layers = 8</code>就是对层数的设定，<strong>通常来说都是从最下层开始往上数n层进行保留</strong>，很少有截取中间几层进行保留或者只保留最高几层的。所谓的保留，就是正常加载预训练时得到的参数，不保留的层直接将参数随机化，而且模型的运算过程也不会跟他们有关。在这样的设定下初始化BERT之后，会输出下列提示，提醒用户注意下列层并未初始化。</p>
@@ -199,18 +201,18 @@
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>MyTech::Author
+            <strong>本文作者：</strong>MyTech::Author
         </p>
         <p>
             <strong>
-                Permalink: 
+                本文链接：
             </strong>
             <a href="https://wylapp.github.io/2023/09/02/bert-freeze/">https://wylapp.github.io/2023/09/02/bert-freeze/</a>
         </p>
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2023-09-03</p></div> 
+    <div class="post-footer__meta"><p>更新于 2023-09-03</p></div> 
     <div class="post-entry__tags"><a href="/tags/python/" class="post-tags__link button"># python</a><a href="/tags/BERT/" class="post-tags__link button"># BERT</a><a href="/tags/transformers/" class="post-tags__link button"># transformers</a></div> 
 </article>
 
@@ -224,7 +226,7 @@
                 <a href="/2023/07/20/pandas-tsv/" class="nav__link">
                     <div>
                         <div class="nav__label">
-                            Next Post
+                            下一篇
                         </div>
                         <div class="nav__title">
                             处理pandas读取tsv文件时切分错误问题
@@ -246,7 +248,7 @@
 
             <footer class="footer">
      
-    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+    <a href="#" class="button" id="b2t" aria-label="回到顶部" title="回到顶部">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
             <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
         </svg>
