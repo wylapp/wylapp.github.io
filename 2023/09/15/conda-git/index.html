@@ -25,20 +25,27 @@
     <!-- meta -->
 
 
-<title>Archive: 2020/12 | My::tech</title>
+<title>无root权限利用Anaconda安装git | My::tech</title>
 
+
+    <meta name="keywords" content="Linux">
 
 
 
 
     <!-- OpenGraph -->
  
-    <meta property="og:type" content="website">
-<meta property="og:title" content="My::tech">
-<meta property="og:url" content="https://wylapp.github.io/archives/2020/12/index.html">
+    <meta name="description" content="最近使用的服务器linux系统非常精简，连git都没有😅，最困难的情况是没有服务器的root权限，没法利用自带的包管理器安装git。通常来说，这种情况下最直接的办法就是自己在用户空间从源代码编译一遍，但是连最基本的openssh库也缺少头文件，make就直接失败，想安装仍然需要root权限，陷入死循环。在这种情况下，最简单的办法就是装一个Anaconda或者miniconda，直接在用户空间补全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无root权限利用Anaconda安装git">
+<meta property="og:url" content="https://wylapp.github.io/2023/09/15/conda-git/index.html">
 <meta property="og:site_name" content="My::tech">
+<meta property="og:description" content="最近使用的服务器linux系统非常精简，连git都没有😅，最困难的情况是没有服务器的root权限，没法利用自带的包管理器安装git。通常来说，这种情况下最直接的办法就是自己在用户空间从源代码编译一遍，但是连最基本的openssh库也缺少头文件，make就直接失败，想安装仍然需要root权限，陷入死循环。在这种情况下，最简单的办法就是装一个Anaconda或者miniconda，直接在用户空间补全">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-09-15T05:08:54.000Z">
+<meta property="article:modified_time" content="2023-09-15T05:15:08.214Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary_large_image">
 
 
@@ -47,6 +54,13 @@
  
 
     
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
     
     
 
@@ -115,72 +129,99 @@
 </header>
 
 
-    <div class="cover">
-        <div class="cover__logo">
-            
-                <h1>My::tech Blog</h1>
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        无root权限利用Anaconda安装git
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/09/" class="post-meta__date button">2023-09-15</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
             
         </div>
-        
-        
-            <div class="cover__intro">
-                <p>Elsewhere to write something.</p>
- 
-            </div>
-        
-    </div>
-
-            
-<main class='main'>
-    
-		
-    <div class="post-list">
-        
-            
-                <div class='post-entry content-card'>
-                    <div class="post-entry__header"></div>
-<div class="post-entry__content">
-    <h2 class="post-entry__title">
-        操作系统课程设计报告上交
-    </h2>
-    
-        <p><span style="color: #ff6600;"><strong>2021.1.4 已截止</strong></span></p>
-    
-</div>
-<div class="post-entry__meta">
-    <a href="/archives/2020/12/" class="post-meta__date button">2020-12-29</a>
-    
- 
-</div>
-<div class="post-entry__tags"></div> 
-<a href="/2020/12/29/echo_199/" class="post-entry__link">操作系统课程设计报告上交</a>
-                </div>
-            
-                <div class='post-entry content-card'>
-                    <div class="post-entry__header"></div>
-<div class="post-entry__content">
-    <h2 class="post-entry__title">
-        纪念一下，matplotlib画出了想要的图
-    </h2>
-    
-        <p><img src="https://pic.imgdb.cn/item/64ba11391ddac507ccc76115.png" alt="" /></p>
-    
-</div>
-<div class="post-entry__meta">
-    <a href="/archives/2020/12/" class="post-meta__date button">2020-12-17</a>
-    
- 
-</div>
-<div class="post-entry__tags"></div> 
-<a href="/2020/12/17/echo_160/" class="post-entry__link">纪念一下，matplotlib画出了想要的图</a>
-                </div>
-            
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
         
     </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>最近使用的服务器linux系统非常精简，连git都没有😅，最困难的情况是没有服务器的root权限，没法利用自带的包管理器安装git。<br>通常来说，这种情况下最直接的办法就是自己在用户空间从源代码编译一遍，但是连最基本的openssh库也缺少头文件，make就直接失败，想安装仍然需要root权限，陷入死循环。<br>在这种情况下，最简单的办法就是装一个Anaconda或者miniconda，直接在用户空间补全所需的依赖，避开使用root权限的问题。只需以下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install git</span><br></pre></td></tr></table></figure>
+<p>就可以了，非常简单。<br>同时发现，conda补全了openssh库的头文件，原来下载的源码也可以编译了，对于没有root权限情况非常实用。</p>
+
+    </div>
     
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>MyTech::Author
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="https://wylapp.github.io/2023/09/15/conda-git/">https://wylapp.github.io/2023/09/15/conda-git/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2023-09-15</p></div> 
+    <div class="post-entry__tags"><a href="/tags/Linux/" class="post-tags__link button"># Linux</a></div> 
+</article>
 
 
-	
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/09/02/bert-freeze/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            BERT的参数应该如何冻结？
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
 </main>
 
             <footer class="footer">
